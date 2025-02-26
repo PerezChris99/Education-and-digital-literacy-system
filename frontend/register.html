@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        #profile-picture-label {
+            display: block;
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #aaff00;
+            border-radius: 50%;
+            margin: 10px auto;
+            cursor: pointer;
+            background-color: #333;
+            color: #aaff00;
+            text-align: center;
+            line-height: 150px;
+            font-size: 2em;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #profile-picture-label img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #profile-picture {
+            display: none;
+        }
+    </style>
+</head>
+<body></body>
+    <h1>Register</h1>
+    <div id="auth-area">
+        <h2>Create New Account</h2>
+        <input type="text" id="register-username" placeholder="Username">
+        <input type="password" id="register-password" placeholder="Password">
+        <label for="language-preference">Language Preference:</label>
+        <select id="language-preference">
+            <option value="en">English</option>
+            <option value="lug">Luganda</option>
+            <option value="swa">Swahili</option>
+        </select>
+        <label for="role">Role:</label>
+        <select id="role">
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+            <option value="admin">Admin</option>
+        </select>
+        <label for="profile-picture" id="profile-picture-label">
+            <img id="profile-image-preview" src="" alt="Profile Picture">
+            <span id="profile-picture-icon">📷</span>
+        </label>
+        <input type="file" id="profile-picture" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(this)">
+        <button onclick="register()" id="register-button">Register</button>
+        <p>
+            <a href="../index.html">Already have an account? Login</a>
+        </p>
+    </div>
+    <script>
+        function previewImage(input) {
+            const preview = document.getElementById('profile-image-preview');
+            const icon = document.getElementById('profile-picture-icon');
+            const file = input.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function() {
+                    preview.src = reader.result;
+                    icon.style.display = 'none';
+                    preview.style.display = 'block';
+                }
+
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+                icon.style.display = 'block';
+                preview.style.display = 'none';
+            }
+        }
+    </script>
+    <script src="auth.js"></script>
+</body>
+</html>

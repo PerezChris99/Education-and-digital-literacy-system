@@ -4,8 +4,26 @@ function register() {
     const password = document.getElementById('register-password').value;
     const language_preference = document.getElementById('language-preference').value;
     const role = document.getElementById('role').value;
-    const profile_picture = document.getElementById('profile-picture').value;
 
+    const profilePictureInput = document.getElementById('profile-picture');
+    const profile_picture = profilePictureInput.files[0];
+
+    // Convert image to base64
+    const reader = new FileReader();
+
+    reader.onloadend = function() {
+        const base64String = reader.result;
+        sendRegistrationRequest(username, password, language_preference, role, base64String);
+    }
+
+    if (profile_picture) {
+        reader.readAsDataURL(profile_picture);
+    } else {
+        sendRegistrationRequest(username, password, language_preference, role, null);
+    }
+}
+
+function sendRegistrationRequest(username, password, language_preference, role, profile_picture) {
     fetch('/register', {
         method: 'POST',
         body: JSON.stringify({ username, password, language_preference, role, profile_picture }),
@@ -14,6 +32,7 @@ function register() {
     .then(response => response.json())
     .then(data => {
         alert(data.message);
+        window.location.href = '/index.html';
     });
 }
 
