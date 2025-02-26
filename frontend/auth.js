@@ -3,10 +3,11 @@ function register() {
     const username = document.getElementById('register-username').value;
     const password = document.getElementById('register-password').value;
     const language_preference = document.getElementById('language-preference').value;
+    const role = document.getElementById('role').value;
 
     fetch('/register', {
         method: 'POST',
-        body: JSON.stringify({ username, password, language_preference }),
+        body: JSON.stringify({ username, password, language_preference, role }),
         headers: { 'Content-Type': 'application/json' }
     })
     .then(response => response.json())

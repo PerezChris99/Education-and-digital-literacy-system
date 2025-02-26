@@ -5,3 +5,8 @@ body.low-bandwidth img {
 body.low-bandwidth video {
     display: none; /* Hide videos */
 }
+
+body.low-bandwidth {
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}

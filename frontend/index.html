@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Education & Digital Literacy System</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Welcome to the Education & Digital Literacy System</h1>
@@ -17,6 +18,12 @@
         <h2>Register</h2>
         <input type="text" id="register-username" placeholder="Username">
         <input type="password" id="register-password" placeholder="Password">
+        <label for="language-preference">Language Preference:</label>
+        <select id="language-preference">
+            <option value="en">English</option>
+            <option value="lug">Luganda</option>
+            <option value="swa">Swahili</option>
+        </select>
         <button onclick="register()" id="register-button">Register</button>
     </div>
 
@@ -36,6 +43,7 @@
     <button onclick="translate('lug')">Luganda</button>
     <button onclick="translate('swa')">Swahili</button>
     <button onclick="translate('en')">English</button>
+    <a href="teacher_dashboard.html" id="teacher-dashboard-link">Teacher Dashboard</a>
 
     <script src="multilingual.js"></script>
     <script src="low_bandwidth.js"></script>

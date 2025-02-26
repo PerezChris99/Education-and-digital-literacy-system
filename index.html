@@ -1,49 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education & Digital Literacy System</title>
+    <link rel="stylesheet" href="frontend/styles.css">
+</head>
+<body>
+    <h1>Welcome to the Education & Digital Literacy System</h1>
 
+    <div id="auth-area">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Username">
+        <input type="password" id="login-password" placeholder="Password">
+        <button onclick="login()" id="login-button">Login</button>
 
+        <h2>Register</h2>
+        <input type="text" id="register-username" placeholder="Username">
+        <input type="password" id="register-password" placeholder="Password">
+        <label for="language-preference">Language Preference:</label>
+        <select id="language-preference">
+            <option value="en">English</option>
+            <option value="lug">Luganda</option>
+            <option value="swa">Swahili</option>
+        </select>
+        <label for="role">Role:</label>
+        <select id="role">
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+            <option value="admin">Admin</option>
+        </select>
+        <button onclick="register()" id="register-button">Register</button>
+    </div>
 
+    <div id="content">
+        <!-- Content will be loaded here -->
+    </div>
 
+    <div id="courses">
+        <h2 id="available-courses">Available Courses</h2>
+        <ul id="course-list">
+            <!-- Courses will be listed here -->
+        </ul>
+    </div>
 
+    <button onclick="toggleLowBandwidthMode()" id="toggle-low-bandwidth">Toggle Low Bandwidth Mode</button>
+    <button onclick="startVirtualClassroom()" id="start-virtual-classroom">Start Virtual Classroom</button>
+    <button onclick="translate('lug')">Luganda</button>
+    <button onclick="translate('swa')">Swahili</button>
+    <button onclick="translate('en')">English</button>
+    <a href="frontend/teacher_dashboard.html" id="teacher-dashboard-link">Teacher Dashboard</a>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</html></body>    <script src="courses.js"></script>    <script src="auth.js"></script>    <script src="dashboard.js"></script>    <script src="webrtc.js"></script>    <script src="low_bandwidth.js"></script>    <script src="multilingual.js"></script>    <button onclick="translate('en')">English</button>    <button onclick="translate('swa')">Swahili</button>    <button onclick="translate('lug')">Luganda</button>    <button onclick="startVirtualClassroom()" id="start-virtual-classroom">Start Virtual Classroom</button>    <button onclick="toggleLowBandwidthMode()" id="toggle-low-bandwidth">Toggle Low Bandwidth Mode</button>    </div>        </ul>            <!-- Courses will be listed here -->        <ul id="course-list">        <h2 id="available-courses">Available Courses</h2>    <div id="courses">    </div>        <!-- Content will be loaded here -->    <div id="content">    </div>        <button onclick="register()" id="register-button">Register</button>        <input type="password" id="register-password" placeholder="Password">        <input type="text" id="register-username" placeholder="Username">        <h2>Register</h2>        <button onclick="login()" id="login-button">Login</button>        <input type="password" id="login-password" placeholder="Password">        <input type="text" id="login-username" placeholder="Username">        <h2>Login</h2>    <div id="auth-area">    <h1>Welcome to the Education & Digital Literacy System</h1><body></head>    <link rel="stylesheet" href="styles.css">    <title>Education & Digital Literacy System</title>    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta charset="UTF-8"><head><html lang="en"><!DOCTYPE html>
+    <script src="frontend/multilingual.js"></script>
+    <script src="frontend/low_bandwidth.js"></script>
+    <script src="frontend/webrtc.js"></script>
+    <script src="frontend/dashboard.js"></script>
+    <script src="frontend/auth.js"></script>
+    <script src="frontend/courses.js"></script>
+</body>
+</html>

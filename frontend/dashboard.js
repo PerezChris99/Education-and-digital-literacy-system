@@ -7,6 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = '/teacher_dashboard.html';
             return;
         }
+         if (role === 'admin') {
+            window.location.href = '/admin_dashboard.html';
+            return;
+        }
         getUserProfile(token);
         document.getElementById('content').innerText = "Welcome to your dashboard!";
         fetchRecommendations(token);
