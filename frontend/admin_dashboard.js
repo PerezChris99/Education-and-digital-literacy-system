@@ -16,9 +16,12 @@ function fetchUsers(token) {
     .then(response => response.json())
     .then(users => {
         const userList = document.getElementById('user-list');
+        userList.innerHTML = ''; // Clear existing list
         users.forEach(user => {
             const listItem = document.createElement('li');
-            listItem.innerHTML = `${user.username} - ${user.role} <button onclick="editUser(${user.id})">Edit</button>`;
+            listItem.innerHTML = `${user.username} - ${user.role} 
+                                  <button onclick="editUser(${user.id})">Edit</button>
+                                  <button onclick="deleteUser(${user.id})">Delete</button>`;
             userList.appendChild(listItem);
         });
     });
@@ -33,7 +36,7 @@ function editUser(userId) {
 }
 
 function updateUserRole(userId, newRole, token) {
-    fetch('/user/profile', {
+    fetch(`/user/profile/${userId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -46,4 +49,21 @@ function updateUserRole(userId, newRole, token) {
         alert(data.message);
         fetchUsers(token); // Refresh user list
     });
+}
+
+function deleteUser(userId) {
+    const token = localStorage.getItem('token');
+    if (confirm("Are you sure you want to delete this user?")) {
+        fetch(`/admin/users/${userId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            fetchUsers(token); // Refresh user list
+        });
+    }
 }

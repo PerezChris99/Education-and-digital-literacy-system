@@ -33,6 +33,8 @@ function startVirtualClassroom() {
             handleAnswer(message);
         } else if (message.type === 'candidate') {
             handleCandidate(message);
+        } else if (message.type === 'hangup') {
+            handleHangup();
         }
     };
 
@@ -91,6 +93,7 @@ function startPeerConnection(stream) {
     peerConnection.oniceconnectionstatechange = () => {
         if (peerConnection.iceConnectionState === 'disconnected') {
             console.log('Peer disconnected');
+            handleHangup();
         }
     };
 
@@ -151,5 +154,25 @@ function setLowBandwidth(enabled) {
             track.stop(); // Stop existing stream
         });
         startLocalStream(); // Restart with new constraints
+    }
+}
+
+function hangUp() {
+    send({ type: 'hangup' });
+    handleHangup();
+}
+
+function handleHangup() {
+    console.log('Hanging up.');
+    closePeerConnection();
+}
+
+function closePeerConnection() {
+    if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+    }
+    if (remoteVideo) {
+        remoteVideo.srcObject = null;
     }
 }

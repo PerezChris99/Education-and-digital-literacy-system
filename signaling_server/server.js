@@ -19,6 +19,10 @@ wss.on('connection', ws => {
     ws.on('close', () => {
         console.log('Client disconnected');
     });
+
+    ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+    };
 });
 
 console.log('Signaling server started on port 3000');

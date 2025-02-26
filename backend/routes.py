@@ -6,6 +6,7 @@ from ai_recommendations import get_user_course_recommendations
 from offline_cache import cache_course_content, get_cached_content_url
 import jwt
 import os
+from sqlalchemy.orm.exc import NoResultFound
 
 api = Blueprint('api', __name__)
 
@@ -16,7 +17,12 @@ def is_admin(token):
         user_id = payload['user_id']
         user = User.query.get(user_id)
         return user and user.role == 'admin'
-    except:
+    except jwt.ExpiredSignatureError:
+        return False
+    except jwt.InvalidTokenError:
+        return False
+    except Exception as e:
+        print(f"Error decoding token: {e}")
         return False
 
 # Helper function to check teacher role
@@ -26,7 +32,12 @@ def is_teacher(token):
         user_id = payload['user_id']
         user = User.query.get(user_id)
         return user and user.role == 'teacher'
-    except:
+    except jwt.ExpiredSignatureError:
+        return False
+    except jwt.InvalidTokenError:
+        return False
+    except Exception as e:
+        print(f"Error decoding token: {e}")
         return False
 
 @api.route('/register', methods=['POST'])
@@ -42,10 +53,14 @@ def register():
 
     hashed_password = hash_password(password)
     new_user = User(username=username, password=hashed_password, language_preference=language_preference, role=role)
-    db.session.add(new_user)
-    db.session.commit()
-
-    return jsonify({'message': 'User registered successfully'}), 201
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({'message': 'User registered successfully'}), 201
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error registering user: {e}")
+        return jsonify({'message': 'Registration failed'}), 500
 
 @api.route('/login', methods=['POST'])
 def login():
@@ -71,23 +86,27 @@ def list_courses():
 
 @api.route('/courses/<int:course_id>', methods=['GET'])
 def get_course(course_id):
-    course = Course.query.get(course_id)
-    if course:
-        # Get cached URLs
-        cached_video_url = get_cached_content_url(f'video_{course_id}.mp4')
-        cached_pdf_url = get_cached_content_url(f'pdf_{course_id}.pdf')
+    try:
+        course = Course.query.get(course_id)
+        if course:
+            # Get cached URLs
+            cached_video_url = get_cached_content_url(f'video_{course_id}.mp4')
+            cached_pdf_url = get_cached_content_url(f'pdf_{course_id}.pdf')
 
-        return jsonify({
-            'id': course.id,
-            'name': course.name,
-            'description': course.description,
-            'content': course.content,
-            'video_url': cached_video_url if cached_video_url else course.video_url,
-            'pdf_url': cached_pdf_url if cached_pdf_url else course.pdf_url,
-            'quiz_data': course.quiz_data
-        }), 200
-    else:
-        return jsonify({'message': 'Course not found'}), 404
+            return jsonify({
+                'id': course.id,
+                'name': course.name,
+                'description': course.description,
+                'content': course.content,
+                'video_url': cached_video_url if cached_video_url else course.video_url,
+                'pdf_url': cached_pdf_url if cached_pdf_url else course.pdf_url,
+                'quiz_data': course.quiz_data
+            }), 200
+        else:
+            return jsonify({'message': 'Course not found'}), 404
+    except Exception as e:
+        print(f"Error getting course: {e}")
+        return jsonify({'message': 'Failed to retrieve course'}), 500
 
 @api.route('/recommendations', methods=['GET'])
 def get_recommendations():
@@ -104,6 +123,9 @@ def get_recommendations():
         return jsonify({'message': 'Token has expired'}), 401
     except jwt.InvalidTokenError:
         return jsonify({'message': 'Invalid token'}), 401
+    except Exception as e:
+        print(f"Error getting recommendations: {e}")
+        return jsonify({'message': 'Failed to retrieve recommendations'}), 500
 
 @api.route('/cache/<int:course_id>', methods=['POST'])
 def cache_content(course_id):
@@ -124,6 +146,9 @@ def cache_content(course_id):
         return jsonify({'message': 'Token has expired'}), 401
     except jwt.InvalidTokenError:
         return jsonify({'message': 'Invalid token'}), 401
+    except Exception as e:
+        print(f"Error caching content: {e}")
+        return jsonify({'message': 'Caching failed'}), 500
 
 @api.route('/teacher/dashboard', methods=['GET'])
 def teacher_dashboard():
@@ -147,6 +172,9 @@ def teacher_dashboard():
         return jsonify({'message': 'Token has expired'}), 401
     except jwt.InvalidTokenError:
         return jsonify({'message': 'Invalid token'}), 401
+    except Exception as e:
+        print(f"Error getting teacher dashboard: {e}")
+        return jsonify({'message': 'Failed to retrieve teacher dashboard'}), 500
 
 @api.route('/courses', methods=['POST'])
 def create_course():
@@ -183,6 +211,10 @@ def create_course():
         return jsonify({'message': 'Token has expired'}), 401
     except jwt.InvalidTokenError:
         return jsonify({'message': 'Invalid token'}), 401
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error creating course: {e}")
+        return jsonify({'message': 'Failed to create course'}), 500
 
 @api.route('/courses/<int:course_id>', methods=['PUT'])
 def update_course(course_id):
@@ -193,21 +225,26 @@ def update_course(course_id):
     if not is_admin(token):
         return jsonify({'message': 'Unauthorized'}), 403
 
-    course = Course.query.get(course_id)
-    if not course:
-        return jsonify({'message': 'Course not found'}), 404
+    try:
+        course = Course.query.get(course_id)
+        if not course:
+            return jsonify({'message': 'Course not found'}), 404
 
-    data = request.get_json()
-    course.name = data.get('name', course.name)
-    course.description = data.get('description', course.description)
-    course.content = data.get('content', course.content)
-    course.video_url = data.get('video_url', course.video_url)
-    course.pdf_url = data.get('pdf_url', course.pdf_url)
-    course.quiz_data = data.get('quiz_data', course.quiz_data)  # Update quiz data
+        data = request.get_json()
+        course.name = data.get('name', course.name)
+        course.description = data.get('description', course.description)
+        course.content = data.get('content', course.content)
+        course.video_url = data.get('video_url', course.video_url)
+        course.pdf_url = data.get('pdf_url', course.pdf_url)
+        course.quiz_data = data.get('quiz_data', course.quiz_data)  # Update quiz data
 
-    db.session.commit()
+        db.session.commit()
 
-    return jsonify({'message': 'Course updated successfully'}), 200
+        return jsonify({'message': 'Course updated successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating course: {e}")
+        return jsonify({'message': 'Failed to update course'}), 500
 
 @api.route('/user/profile', methods=['GET'])
 def get_user_profile():
@@ -232,29 +269,36 @@ def get_user_profile():
         return jsonify({'message': 'Token has expired'}), 401
     except jwt.InvalidTokenError:
         return jsonify({'message': 'Invalid token'}), 401
+    except Exception as e:
+        print(f"Error getting user profile: {e}")
+        return jsonify({'message': 'Failed to retrieve user profile'}), 500
 
-@api.route('/user/profile', methods=['PUT'])
-def update_user_profile():
-     token = request.headers.get('Authorization')
-     if not token:
-          return jsonify({'message': 'Missing token'}), 401
-     try:
-          payload = decode_jwt_token(token)
-          user_id = payload['user_id']
-          user = User.query.get(user_id)
-          if not user:
-               return jsonify({'message': 'User not found'}), 404
-          data = request.get_json()
-          # Only admins can change user roles
-          if is_admin(token) and 'role' in data:
-               user.role = data['role']
-          user.language_preference = data.get('language_preference', user.language_preference)
-          db.session.commit()
-          return jsonify({'message': 'User profile updated successfully'}), 200
-     except jwt.ExpiredSignatureError:
-          return jsonify({'message': 'Token has expired'}), 401
-     except jwt.InvalidTokenError:
-          return jsonify({'message': 'Invalid token'}), 401
+@api.route('/user/profile/<int:user_id>', methods['PUT'])
+def update_user_profile(user_id):
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Missing token'}), 401
+
+    if not is_admin(token):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    try:
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+
+        data = request.get_json()
+        # Only admins can change user roles
+        if 'role' in data:
+            user.role = data['role']
+        user.language_preference = data.get('language_preference', user.language_preference)
+        db.session.commit()
+
+        return jsonify({'message': 'User profile updated successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error updating user profile: {e}")
+        return jsonify({'message': 'Failed to update user profile'}), 500
 
 @api.route('/admin/users', methods=['GET'])
 def list_users():
@@ -268,3 +312,25 @@ def list_users():
     users = User.query.all()
     user_list = [{'id': user.id, 'username': user.username, 'role': user.role} for user in users]
     return jsonify(user_list), 200
+
+@api.route('/admin/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Missing token'}), 401
+
+    if not is_admin(token):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    try:
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({'message': 'User deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error deleting user: {e}")
+        return jsonify({'message': 'Failed to delete user'}), 500
