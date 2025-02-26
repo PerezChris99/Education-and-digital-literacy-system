@@ -6,8 +6,10 @@ function toggleLowBandwidthMode() {
     if (lowBandwidthMode) {
         // Reduce image quality, disable video streams, etc.
         alert('Low bandwidth mode enabled. Images and videos will be reduced in quality.');
+        document.body.classList.add('low-bandwidth');
     } else {
         alert('Low bandwidth mode disabled. Images and videos will be displayed in normal quality.');
+        document.body.classList.remove('low-bandwidth');
     }
     applyLowBandwidthMode();
 }

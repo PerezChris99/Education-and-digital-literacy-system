@@ -1,0 +1,7 @@
+body.low-bandwidth img {
+    opacity: 0.5; /* Reduce image opacity */
+}
+
+body.low-bandwidth video {
+    display: none; /* Hide videos */
+}

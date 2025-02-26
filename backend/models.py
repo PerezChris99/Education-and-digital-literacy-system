@@ -1,5 +1,5 @@
 from app import db
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, JSON
 from sqlalchemy.orm import relationship
 
 class User(db.Model):
@@ -21,6 +21,7 @@ class Course(db.Model):
     users = relationship("User", secondary="user_courses", back_populates="courses")
     video_url = Column(String(200))  # URL for video content
     pdf_url = Column(String(200))  # URL for PDF notes
+    quiz_data = Column(JSON)  # Store quiz data as JSON
 
     def __repr__(self):
         return f'<Course {self.name}>'

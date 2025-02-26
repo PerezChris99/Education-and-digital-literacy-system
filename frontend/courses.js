@@ -27,6 +27,9 @@ function loadCourseContent(courseId) {
         if (course.pdf_url) {
             content += `<a href="${course.pdf_url}" target="_blank">View PDF Notes</a>`;
         }
+        if (course.quiz_data) {
+            content += `<button onclick="displayQuiz(${JSON.stringify(course.quiz_data)})">Take Quiz</button>`;
+        }
         document.getElementById('content').innerHTML = content;
     });
 }

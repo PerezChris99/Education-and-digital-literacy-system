@@ -134,3 +134,37 @@ def create_course():
         return jsonify({'message': 'Token has expired'}), 401
     except jwt.InvalidTokenError:
         return jsonify({'message': 'Invalid token'}), 401
+
+@api.route('/courses/<int:course_id>', methods=['PUT'])
+def update_course(course_id):
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Missing token'}), 401
+
+    try:
+        payload = decode_jwt_token(token)
+        user_id = payload['user_id']
+        user = User.query.get(user_id)
+
+        if not user or not user.is_teacher:
+            return jsonify({'message': 'Unauthorized'}), 403
+
+        course = Course.query.get(course_id)
+        if not course:
+            return jsonify({'message': 'Course not found'}), 404
+
+        data = request.get_json()
+        course.name = data.get('name', course.name)
+        course.description = data.get('description', course.description)
+        course.content = data.get('content', course.content)
+        course.video_url = data.get('video_url', course.video_url)
+        course.pdf_url = data.get('pdf_url', course.pdf_url)
+        course.quiz_data = data.get('quiz_data', course.quiz_data)  # Update quiz data
+
+        db.session.commit()
+
+        return jsonify({'message': 'Course updated successfully'}), 200
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token has expired'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token'}), 401
