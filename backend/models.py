@@ -1,6 +1,7 @@
 from app import db
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, JSON, Float
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, JSON, Float, DateTime
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 class User(db.Model):
     id = Column(Integer, primary_key=True)
@@ -10,6 +11,8 @@ class User(db.Model):
     courses = relationship("Course", secondary="user_courses", back_populates="users")
     language_preference = Column(String(10), default='en')  # User's preferred language
     grades = relationship("Grade", back_populates="user")
+    last_login = Column(DateTime, default=datetime.utcnow)
+    profile_picture = Column(String(200), nullable=True) # URL to profile picture
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -23,6 +26,7 @@ class Course(db.Model):
     video_url = Column(String(200))  # URL for video content
     pdf_url = Column(String(200))  # URL for PDF notes
     quiz_data = Column(JSON)  # Store quiz data as JSON
+    announcements = relationship("Announcement", back_populates="course")
 
     def __repr__(self):
         return f'<Course {self.name}>'
@@ -34,6 +38,15 @@ class Grade(db.Model):
     grade = Column(Float)
     user = relationship("User", back_populates="grades")
     course = relationship("Course")
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+class Announcement(db.Model):
+    id = Column(Integer, primary_key=True)
+    title = Column(String(100), nullable=False)
+    content = Column(Text)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    course_id = Column(Integer, ForeignKey('course.id'))
+    course = relationship("Course", back_populates="announcements")
 
 # Association table for many-to-many relationship between users and courses
 user_courses = db.Table('user_courses',

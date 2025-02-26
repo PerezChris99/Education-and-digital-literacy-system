@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = '/admin_dashboard.html';
             return;
         }
+        if (role === 'student') {
+            window.location.href = '/student_dashboard.html';
+            return;
+        }
         getUserProfile(token);
         document.getElementById('content').innerText = "Welcome to your dashboard!";
         fetchRecommendations(token);

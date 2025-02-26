@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import User, Course, Grade
+from models import User, Course, Grade, Announcement
 from app import db
 from utils import hash_password, generate_jwt_token, decode_jwt_token
 from ai_recommendations import get_user_course_recommendations
@@ -7,6 +7,7 @@ from offline_cache import cache_course_content, get_cached_content_url
 import jwt
 import os
 from sqlalchemy.orm.exc import NoResultFound
+from datetime import datetime
 
 api = Blueprint('api', __name__)
 
@@ -47,12 +48,13 @@ def register():
     password = data.get('password')
     language_preference = data.get('language_preference', 'en')  # Get language preference
     role = data.get('role', 'student') # Get user role
+    profile_picture = data.get('profile_picture')
 
     if not username or not password:
         return jsonify({'message': 'Username and password are required'}), 400
 
     hashed_password = hash_password(password)
-    new_user = User(username=username, password=hashed_password, language_preference=language_preference, role=role)
+    new_user = User(username=username, password=hashed_password, language_preference=language_preference, role=role, profile_picture=profile_picture)
     try:
         db.session.add(new_user)
         db.session.commit()
@@ -74,6 +76,8 @@ def login():
     user = User.query.filter_by(username=username).first()
     if user and utils.verify_password(password, user.password):
         token = generate_jwt_token(user.id)
+        user.last_login = datetime.utcnow()
+        db.session.commit()
         return jsonify({'message': 'Login successful', 'token': token, 'role': user.role}), 200
     else:
         return jsonify({'message': 'Invalid credentials'}), 401
@@ -280,6 +284,7 @@ def get_user_profile():
             'username': user.username,
             'role': user.role,
             'language_preference': user.language_preference,
+            'profile_picture': user.profile_picture
         }), 200
     except jwt.ExpiredSignatureError:
         return jsonify({'message': 'Token has expired'}), 401
@@ -308,6 +313,7 @@ def update_user_profile(user_id):
         if 'role' in data:
             user.role = data['role']
         user.language_preference = data.get('language_preference', user.language_preference)
+        user.profile_picture = data.get('profile_picture', user.profile_picture)
         db.session.commit()
 
         return jsonify({'message': 'User profile updated successfully'}), 200
@@ -377,3 +383,77 @@ def add_grade():
         db.session.rollback()
         print(f"Error adding grade: {e}")
         return jsonify({'message': 'Failed to add grade'}), 500
+
+@api.route('/student/dashboard', methods=['GET'])
+def student_dashboard():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Missing token'}), 401
+
+    try:
+        payload = decode_jwt_token(token)
+        user_id = payload['user_id']
+        user = User.query.get(user_id)
+
+        if not user or user.role != 'student':
+            return jsonify({'message': 'Unauthorized'}), 403
+
+        # Get courses the student is enrolled in
+        courses = Course.query.filter(Course.users.any(id=user_id)).all()
+        course_list = [{'id': course.id, 'name': course.name, 'description': course.description} for course in courses]
+
+        # Get recommended courses
+        recommendations = get_user_course_recommendations(user_id)
+
+        # Get announcements for enrolled courses
+        announcements = []
+        for course in courses:
+            course_announcements = Announcement.query.filter_by(course_id=course.id).order_by(Announcement.timestamp.desc()).limit(5).all()
+            announcements.extend([{'title': a.title, 'content': a.content, 'timestamp': a.timestamp} for a in course_announcements])
+
+        # Get grades for enrolled courses
+        grades = Grade.query.filter_by(user_id=user_id).all()
+        grade_list = [{'course_id': g.course_id, 'grade': g.grade} for g in grades]
+
+        return jsonify({
+            'username': user.username,
+            'profile_picture': user.profile_picture,
+            'courses': course_list,
+            'recommendations': recommendations,
+            'announcements': announcements,
+            'grades': grade_list
+        }), 200
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token has expired'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token'}), 401
+    except Exception as e:
+        print(f"Error getting student dashboard: {e}")
+        return jsonify({'message': 'Failed to retrieve student dashboard'}), 500
+
+@api.route('/announcements', methods=['POST'])
+def create_announcement():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Missing token'}), 401
+
+    if not is_teacher(token) and not is_admin(token):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    title = data.get('title')
+    content = data.get('content')
+    course_id = data.get('course_id')
+
+    if not title or not content or not course_id:
+        return jsonify({'message': 'Title, content, and course ID are required'}), 400
+
+    try:
+        new_announcement = Announcement(title=title, content=content, course_id=course_id)
+        db.session.add(new_announcement)
+        db.session.commit()
+        return jsonify({'message': 'Announcement created successfully'}), 201
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error creating announcement: {e}")
+        return jsonify({'message': 'Failed to create announcement'}), 500

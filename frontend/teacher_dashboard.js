@@ -10,6 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         createCourse(token);
     });
+
+    document.getElementById('announcement-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        createAnnouncement(token);
+    });
 });
 
 function fetchTeacherDashboard(token) {
@@ -85,5 +90,25 @@ function updateGrade(studentId, courseId, newGrade, token) {
     .then(data => {
         alert(data.message);
         fetchTeacherDashboard(token); // Refresh the student list
+    });
+}
+
+function createAnnouncement(token) {
+    const title = document.getElementById('announcement-title').value;
+    const content = document.getElementById('announcement-content').value;
+    const courseId = document.getElementById('announcement-course').value;
+
+    fetch('/announcements', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title: title, content: content, course_id: courseId })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        fetchTeacherDashboard(token); // Refresh the dashboard
     });
 }
