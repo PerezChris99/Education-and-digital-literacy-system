@@ -1,6 +1,6 @@
 /* General Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Roboto Mono', monospace;
     background-color: #121212; /* Dark background */
     color: #f0f0f0; /* Light text */
     margin: 0;
@@ -10,29 +10,34 @@ body {
     align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
+    overflow-x: hidden;
+    background: linear-gradient(to bottom, #000000, #121212);
 }
 
 h1 {
     color: #aaff00; /* Lime green */
     text-shadow: 0 0 10px rgba(170, 255, 0, 0.5);
     margin-bottom: 20px;
+    text-align: center;
 }
 
 h2 {
     color: #aaff00; /* Lime green */
-    border-bottom: 2px solid #aaff00;
+    border-bottom: 1px solid #aaff00;
     padding-bottom: 5px;
     margin-top: 20px;
+    text-align: center;
 }
 
 /* Auth Area Styles */
 #auth-area {
-    background-color: #212121;
+    background-color: rgba(33, 33, 33, 0.8);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
     text-align: center;
+    width: 45%;
 }
 
 #auth-area input[type="text"],
@@ -44,27 +49,30 @@ h2 {
     border-radius: 5px;
     background-color: #333;
     color: #f0f0f0;
-    width: 250px;
+    width: 80%;
+    max-width: 250px;
 }
 
 #auth-area button {
     padding: 10px 20px;
     margin-top: 10px;
-    border: none;
+    border: 1px solid #aaff00;
     border-radius: 5px;
-    background-color: #aaff00;
-    color: #121212;
+    background-color: transparent;
+    color: #aaff00;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 #auth-area button:hover {
-    background-color: #ccff33;
+    background-color: #333;
+    color: #aaff00;
+    border-color: #ccff33;
 }
 
 /* Course List Styles */
 #courses {
-    width: 80%;
+    width: 45%;
     text-align: center;
 }
 
@@ -74,11 +82,16 @@ h2 {
 }
 
 #course-list li {
-    background-color: #212121;
+    background-color: rgba(33, 33, 33, 0.8);
     margin: 10px 0;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+#course-list li:hover {
+    box-shadow: 0 0 10px rgba(170, 255, 0, 0.3);
 }
 
 #course-list a {
@@ -94,17 +107,19 @@ h2 {
 /* Button Styles */
 button {
     padding: 10px 20px;
-    border: none;
+    border: 1px solid #aaff00;
     border-radius: 5px;
-    background-color: #aaff00;
-    color: #121212;
+    background-color: transparent;
+    color: #aaff00;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
     margin: 5px;
 }
 
 button:hover {
-    background-color: #ccff33;
+    background-color: #333;
+    color: #aaff00;
+    border-color: #ccff33;
 }
 
 /* Multilingual Button Styles */
@@ -185,13 +200,13 @@ h1, h2, label, a, button, input, select, textarea {
 
 /* Form specific styles */
 form {
-    width: 100%;
+    width: 80%;
     max-width: 600px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #212121;
+    background-color: rgba(33, 33, 33, 0.8);
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     text-align: left;
 }
 
@@ -217,18 +232,6 @@ textarea {
 
 textarea {
     resize: vertical;
-}
-
-/* Add a subtle border to the buttons */
-button {
-    border: 1px solid #aaff00;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background-color: #333;
-    color: #aaff00;
-    border-color: #ccff33;
 }
 
 /* Style the links */
@@ -296,9 +299,23 @@ video {
 }
 
 #courses > * {
-    margin-bottom: 10px; /* Space between elements in courses */
+    margin-bottom: 15px; /* Space between elements in courses */
 }
 
-#courses > div > button {
+/* Container for buttons */
+#courses > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#courses > div > div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+#courses > div > div > button {
+    flex: 1;
     margin: 5px;
 }
