@@ -185,7 +185,7 @@ h1, h2, label, a, button, input, select, textarea {
 
 /* Form specific styles */
 form {
-    width: 80%;
+    width: 100%;
     max-width: 600px;
     margin: 20px auto;
     padding: 20px;
@@ -274,4 +274,31 @@ video {
     max-width: 600px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#courses #dashboard-access {
+    margin-top: 10px; /* Reduced margin */
+    text-align: center;
+}
+
+#courses #dashboard-access button, #courses #dashboard-access a {
+    display: inline-block;
+    width: auto;
+    margin: 5px;
+    font-size: 0.9em; /* Smaller font size */
+    padding: 8px 16px; /* Adjusted padding */
+}
+
+#courses #login-message {
+    color: #f0f0f0;
+    margin-top: 10px; /* Reduced margin */
+    font-size: 0.85em; /* Smaller font size */
+}
+
+#courses > * {
+    margin-bottom: 10px; /* Space between elements in courses */
+}
+
+#courses > div > button {
+    margin: 5px;
 }

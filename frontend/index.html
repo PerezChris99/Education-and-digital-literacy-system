@@ -4,52 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Education & Digital Literacy System</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="frontend/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Style adjustments for two-column layout */
+        .container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        #auth-area {
+            width: 45%;
+            text-align: center;
+        }
+
+        #courses {
+            width: 45%;
+            text-align: center;
+        }
+
+        #courses button, #courses a {
+            display: block;
+            margin: 10px auto;
+            width: 80%;
+        }
+
+        #dashboard-access {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #dashboard-access button, #dashboard-access a {
+            display: inline-block;
+            width: auto;
+            margin: 5px;
+            font-size: 0.9em;
+            padding: 8px 16px;
+        }
+
+        #login-message {
+            color: #f0f0f0;
+            margin-top: 10px;
+            font-size: 0.85em;
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome to the Education & Digital Literacy System</h1>
 
-    <div id="auth-area">
-        <h2>Login</h2>
-        <input type="text" id="login-username" placeholder="Username">
-        <input type="password" id="login-password" placeholder="Password">
-        <button onclick="login()" id="login-button">Login</button>
+    <div class="container">
+        <div id="auth-area">
+            <h2>Login</h2>
+            <input type="text" id="login-username" placeholder="Username">
+            <input type="password" id="login-password" placeholder="Password">
+            <button onclick="login()" id="login-button">Login</button>
 
-        <h2>Register</h2>
-        <input type="text" id="register-username" placeholder="Username">
-        <input type="password" id="register-password" placeholder="Password">
-        <label for="language-preference">Language Preference:</label>
-        <select id="language-preference">
-            <option value="en">English</option>
-            <option value="lug">Luganda</option>
-            <option value="swa">Swahili</option>
-        </select>
-        <button onclick="register()" id="register-button">Register</button>
+            <h2>Register</h2>
+            <input type="text" id="register-username" placeholder="Username">
+            <input type="password" id="register-password" placeholder="Password">
+            <label for="language-preference">Language Preference:</label>
+            <select id="language-preference">
+                <option value="en">English</option>
+                <option value="lug">Luganda</option>
+                <option value="swa">Swahili</option>
+            </select>
+            <label for="role">Role:</label>
+            <select id="role">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="admin">Admin</option>
+            </select>
+            <label for="profile-picture">Profile Picture URL:</label>
+            <input type="text" id="profile-picture" placeholder="Profile Picture URL">
+            <button onclick="register()" id="register-button">Register</button>
+        </div>
+
+        <div id="courses">
+            <h2 id="available-courses">Available Courses</h2>
+            <button onclick="toggleLowBandwidthMode()" id="toggle-low-bandwidth">Toggle Low Bandwidth Mode</button>
+            <button onclick="startVirtualClassroom()" id="start-virtual-classroom">Start Virtual Classroom</button>
+            <div>
+                <button onclick="translate('lug')">Luganda</button>
+                <button onclick="translate('swa')">Swahili</button>
+                <button onclick="translate('en')">English</button>
+            </div>
+            <a href="frontend/teacher_dashboard.html" id="teacher-dashboard-link">Teacher Dashboard</a>
+            <p id="login-message">Please login to access the dashboard.</p>
+            <ul id="course-list">
+                <!-- Courses will be listed here -->
+            </ul>
+        </div>
     </div>
 
     <div id="content">
         <!-- Content will be loaded here -->
     </div>
 
-    <div id="courses">
-        <h2 id="available-courses">Available Courses</h2>
-        <ul id="course-list">
-            <!-- Courses will be listed here -->
-        </ul>
-    </div>
-
-    <button onclick="toggleLowBandwidthMode()" id="toggle-low-bandwidth">Toggle Low Bandwidth Mode</button>
-    <button onclick="startVirtualClassroom()" id="start-virtual-classroom">Start Virtual Classroom</button>
-    <button onclick="translate('lug')">Luganda</button>
-    <button onclick="translate('swa')">Swahili</button>
-    <button onclick="translate('en')">English</button>
-    <a href="teacher_dashboard.html" id="teacher-dashboard-link">Teacher Dashboard</a>
-
-    <script src="multilingual.js"></script>
-    <script src="low_bandwidth.js"></script>
-    <script src="webrtc.js"></script>
-    <script src="dashboard.js"></script>
-    <script src="auth.js"></script>
-    <script src="courses.js"></script>
+    <script src="frontend/multilingual.js"></script>
+    <script src="frontend/low_bandwidth.js"></script>
+    <script src="frontend/webrtc.js"></script>
+    <script src="frontend/dashboard.js"></script>
+    <script src="frontend/auth.js"></script>
+    <script src="frontend/courses.js"></script>
 </body>
 </html>
