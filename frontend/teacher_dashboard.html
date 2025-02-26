@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Teacher Dashboard</h1>
+
+    <div id="create-course">
+        <h2>Create New Course</h2>
+        <form id="create-course-form">
+            <label for="course-name">Name:</label><br>
+            <input type="text" id="course-name" name="course-name"><br>
+            <label for="course-description">Description:</label><br>
+            <textarea id="course-description" name="course-description"></textarea><br>
+            <label for="course-content">Content:</label><br>
+            <textarea id="course-content" name="course-content"></textarea><br>
+            <label for="course-video-url">Video URL:</label><br>
+            <input type="text" id="course-video-url" name="course-video-url"><br>
+            <label for="course-pdf-url">PDF URL:</label><br>
+            <input type="text" id="course-pdf-url" name="course-pdf-url"><br>
+            <button type="submit">Create Course</button>
+        </form>
+    </div>
+
+    <div id="courses">
+        <h2>My Courses</h2>
+        <ul id="course-list">
+            <!-- Courses will be listed here -->
+        </ul>
+    </div>
+
+    <div id="students">
+        <h2>My Students</h2>
+        <ul id="student-list">
+            <!-- Students will be listed here -->
+        </ul>
+    </div>
+
+    <script src="teacher_dashboard.js"></script>
+</body>
+</html>

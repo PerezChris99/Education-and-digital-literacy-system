@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import User, Course
+from models import User, Course, Grade
 from app import db
 from utils import hash_password, generate_jwt_token, decode_jwt_token
 from ai_recommendations import get_user_course_recommendations
@@ -164,10 +164,26 @@ def teacher_dashboard():
         if not user or user.role != 'teacher':
             return jsonify({'message': 'Unauthorized'}), 403
 
+        # Get courses taught by the teacher
         courses = Course.query.filter(Course.users.any(id=user_id)).all()
         course_list = [{'id': course.id, 'name': course.name, 'description': course.description} for course in courses]
 
-        return jsonify({'courses': course_list}), 200
+        # Get students enrolled in those courses
+        student_list = []
+        for course in courses:
+            for student in course.users:
+                if student.role == 'student':
+                    # Fetch the grade for the student in the course
+                    grade = Grade.query.filter_by(user_id=student.id, course_id=course.id).first()
+                    student_info = {
+                        'id': student.id,
+                        'username': student.username,
+                        'course_name': course.name,
+                        'grade': grade.grade if grade else 'N/A'
+                    }
+                    student_list.append(student_info)
+
+        return jsonify({'courses': course_list, 'students': student_list}), 200
     except jwt.ExpiredSignatureError:
         return jsonify({'message': 'Token has expired'}), 401
     except jwt.InvalidTokenError:
@@ -273,7 +289,7 @@ def get_user_profile():
         print(f"Error getting user profile: {e}")
         return jsonify({'message': 'Failed to retrieve user profile'}), 500
 
-@api.route('/user/profile/<int:user_id>', methods['PUT'])
+@api.route('/user/profile/<int:user_id>', methods=['PUT'])
 def update_user_profile(user_id):
     token = request.headers.get('Authorization')
     if not token:
@@ -334,3 +350,30 @@ def delete_user(user_id):
         db.session.rollback()
         print(f"Error deleting user: {e}")
         return jsonify({'message': 'Failed to delete user'}), 500
+
+@api.route('/grades', methods=['POST'])
+def add_grade():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Missing token'}), 401
+
+    if not is_teacher(token) and not is_admin(token):
+        return jsonify({'message': 'Unauthorized'}), 403
+
+    data = request.get_json()
+    user_id = data.get('user_id')
+    course_id = data.get('course_id')
+    grade = data.get('grade')
+
+    if not user_id or not course_id or not grade:
+        return jsonify({'message': 'User ID, Course ID, and Grade are required'}), 400
+
+    try:
+        new_grade = Grade(user_id=user_id, course_id=course_id, grade=grade)
+        db.session.add(new_grade)
+        db.session.commit()
+        return jsonify({'message': 'Grade added successfully'}), 201
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error adding grade: {e}")
+        return jsonify({'message': 'Failed to add grade'}), 500

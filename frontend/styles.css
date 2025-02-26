@@ -1,12 +1,277 @@
+/* General Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212; /* Dark background */
+    color: #f0f0f0; /* Light text */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+}
+
+h1 {
+    color: #aaff00; /* Lime green */
+    text-shadow: 0 0 10px rgba(170, 255, 0, 0.5);
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #aaff00; /* Lime green */
+    border-bottom: 2px solid #aaff00;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+/* Auth Area Styles */
+#auth-area {
+    background-color: #212121;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#auth-area input[type="text"],
+#auth-area input[type="password"],
+#auth-area select {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #424242;
+    border-radius: 5px;
+    background-color: #333;
+    color: #f0f0f0;
+    width: 250px;
+}
+
+#auth-area button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #aaff00;
+    color: #121212;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#auth-area button:hover {
+    background-color: #ccff33;
+}
+
+/* Course List Styles */
+#courses {
+    width: 80%;
+    text-align: center;
+}
+
+#course-list {
+    list-style: none;
+    padding: 0;
+}
+
+#course-list li {
+    background-color: #212121;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+#course-list a {
+    color: #f0f0f0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+#course-list a:hover {
+    color: #aaff00;
+}
+
+/* Button Styles */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #aaff00;
+    color: #121212;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 5px;
+}
+
+button:hover {
+    background-color: #ccff33;
+}
+
+/* Multilingual Button Styles */
+button[onclick^="translate"] {
+    background-color: #333;
+    color: #aaff00;
+    border: 1px solid #aaff00;
+}
+
+button[onclick^="translate"]:hover {
+    background-color: #424242;
+}
+
+/* Teacher Dashboard Styles */
+#teacher-dashboard-link {
+    color: #aaff00;
+    text-decoration: none;
+    margin-top: 20px;
+    display: inline-block;
+    transition: color 0.3s ease;
+}
+
+#teacher-dashboard-link:hover {
+    color: #ccff33;
+}
+
+/* Low Bandwidth Mode Styles */
 body.low-bandwidth img {
-    opacity: 0.5; /* Reduce image opacity */
+    opacity: 0.5;
 }
 
 body.low-bandwidth video {
-    display: none; /* Hide videos */
+    display: none;
 }
 
 body.low-bandwidth {
     font-size: 14px;
     font-family: Arial, sans-serif;
+}
+
+/* Admin Dashboard Styles */
+#user-management {
+    width: 80%;
+    text-align: center;
+}
+
+#user-list {
+    list-style: none;
+    padding: 0;
+}
+
+#user-list li {
+    background-color: #212121;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Futuristic Styles */
+body {
+    background: linear-gradient(to bottom, #000000, #121212);
+    overflow-x: hidden;
+}
+
+h1, h2, label, a, button, input, select, textarea {
+    font-family: 'Roboto Mono', monospace;
+}
+
+/* Add a subtle glow effect */
+* {
+    transition: all 0.3s ease;
+}
+
+*:hover {
+    box-shadow: 0 0 10px rgba(170, 255, 0, 0.3);
+}
+
+/* Form specific styles */
+form {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #212121;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #aaff00;
+}
+
+input[type="text"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #424242;
+    border-radius: 5px;
+    background-color: #333;
+    color: #f0f0f0;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Add a subtle border to the buttons */
+button {
+    border: 1px solid #aaff00;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #333;
+    color: #aaff00;
+    border-color: #ccff33;
+}
+
+/* Style the links */
+a {
+    color: #aaff00;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #ccff33;
+}
+
+/* Style the list items */
+li {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #333;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Style the select elements */
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #424242;
+    border-radius: 5px;
+    background-color: #333;
+    color: #f0f0f0;
+    box-sizing: border-box;
+}
+
+/* Style the checkbox */
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* Style the video */
+video {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }

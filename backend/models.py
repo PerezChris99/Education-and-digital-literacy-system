@@ -1,5 +1,5 @@
 from app import db
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, JSON
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, JSON, Float
 from sqlalchemy.orm import relationship
 
 class User(db.Model):
@@ -9,6 +9,7 @@ class User(db.Model):
     role = Column(String(20), default='student')  # role can be 'student', 'teacher', or 'admin'
     courses = relationship("Course", secondary="user_courses", back_populates="users")
     language_preference = Column(String(10), default='en')  # User's preferred language
+    grades = relationship("Grade", back_populates="user")
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -25,6 +26,14 @@ class Course(db.Model):
 
     def __repr__(self):
         return f'<Course {self.name}>'
+
+class Grade(db.Model):
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    course_id = Column(Integer, ForeignKey('course.id'), nullable=False)
+    grade = Column(Float)
+    user = relationship("User", back_populates="grades")
+    course = relationship("Course")
 
 # Association table for many-to-many relationship between users and courses
 user_courses = db.Table('user_courses',

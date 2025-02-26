@@ -22,11 +22,22 @@ function fetchTeacherDashboard(token) {
             alert(data.message);
             return;
         }
+
         const courseList = document.getElementById('course-list');
+        courseList.innerHTML = '';
         data.courses.forEach(course => {
             const listItem = document.createElement('li');
-            listItem.innerHTML = `${course.name} - ${course.description} <button onclick="editCourse(${course.id})">Edit</button>`;
+            listItem.innerHTML = `${course.name} - ${course.description}`;
             courseList.appendChild(listItem);
+        });
+
+        const studentList = document.getElementById('student-list');
+        studentList.innerHTML = '';
+        data.students.forEach(student => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `${student.username} - ${student.course_name} - Grade: ${student.grade}
+                                  <button onclick="editGrade(${student.id}, ${student.course_id})">Edit Grade</button>`;
+            studentList.appendChild(listItem);
         });
     });
 }
@@ -53,33 +64,26 @@ function createCourse(token) {
     });
 }
 
-function editCourse(courseId) {
-    // Implement course editing functionality (e.g., open a modal with course details)
+function editGrade(studentId, courseId) {
     const token = localStorage.getItem('token');
-    // For simplicity, let's just add a prompt for new quiz data
-    const quizData = prompt("Enter quiz data as JSON:");
-    if (quizData) {
-        try {
-            const parsedQuizData = JSON.parse(quizData);
-            updateCourse(courseId, parsedQuizData, token);
-        } catch (e) {
-            alert("Invalid JSON format for quiz data.");
-        }
+    const newGrade = prompt("Enter new grade for the student:");
+    if (newGrade) {
+        updateGrade(studentId, courseId, newGrade, token);
     }
 }
 
-function updateCourse(courseId, quizData, token) {
-    fetch(`/courses/${courseId}`, {
-        method: 'PUT',
+function updateGrade(studentId, courseId, newGrade, token) {
+    fetch('/grades', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ quiz_data: quizData })
+        body: JSON.stringify({ user_id: studentId, course_id: courseId, grade: newGrade })
     })
     .then(response => response.json())
     .then(data => {
         alert(data.message);
-        fetchTeacherDashboard(token); // Refresh the course list
+        fetchTeacherDashboard(token); // Refresh the student list
     });
 }
