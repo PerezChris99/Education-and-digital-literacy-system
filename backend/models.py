@@ -9,6 +9,7 @@ class User(db.Model):
     role = Column(String(20), default='student')
     courses = relationship("Course", secondary="user_courses", back_populates="users")
     is_teacher = Column(Boolean, default=False)  # New field to indicate if the user is a teacher
+    language_preference = Column(String(10), default='en')  # User's preferred language
 
     def __repr__(self):
         return f'<User {self.username}>'

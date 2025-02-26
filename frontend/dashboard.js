@@ -7,12 +7,24 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = '/teacher_dashboard.html';
             return;
         }
+        getUserProfile(token);
         document.getElementById('content').innerText = "Welcome to your dashboard!";
         fetchRecommendations(token);
     } else {
         document.getElementById('content').innerText = "Please login to access the dashboard.";
     }
 });
+
+function getUserProfile(token) {
+    fetch('/user/profile', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(response => response.json())
+    .then(data => {
+        localStorage.setItem('language_preference', data.language_preference);
+        translate(data.language_preference);
+    });
+}
 
 function fetchRecommendations(token) {
     fetch('/recommendations', {

@@ -13,12 +13,13 @@ def register():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
+    language_preference = data.get('language_preference', 'en')  # Get language preference
 
     if not username or not password:
         return jsonify({'message': 'Username and password are required'}), 400
 
     hashed_password = hash_password(password)
-    new_user = User(username=username, password=hashed_password)
+    new_user = User(username=username, password=hashed_password, language_preference=language_preference)
     db.session.add(new_user)
     db.session.commit()
 
@@ -164,6 +165,54 @@ def update_course(course_id):
         db.session.commit()
 
         return jsonify({'message': 'Course updated successfully'}), 200
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token has expired'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token'}), 401
+
+@api.route('/user/profile', methods=['GET'])
+def get_user_profile():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Missing token'}), 401
+
+    try:
+        payload = decode_jwt_token(token)
+        user_id = payload['user_id']
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+
+        return jsonify({
+            'username': user.username,
+            'role': user.role,
+            'language_preference': user.language_preference
+        }), 200
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token has expired'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token'}), 401
+
+@api.route('/user/profile', methods=['PUT'])
+def update_user_profile():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Missing token'}), 401
+
+    try:
+        payload = decode_jwt_token(token)
+        user_id = payload['user_id']
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+
+        data = request.get_json()
+        user.language_preference = data.get('language_preference', user.language_preference)
+        db.session.commit()
+
+        return jsonify({'message': 'User profile updated successfully'}), 200
     except jwt.ExpiredSignatureError:
         return jsonify({'message': 'Token has expired'}), 401
     except jwt.InvalidTokenError:
