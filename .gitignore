@@ -1,0 +1,47 @@
+# Bytecode / intermediary Python files
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.eggs/
+dist/
+build/
+develop-eggs/
+**/MANIFEST.in
+**/setup.py
+**/setup.cfg
+**/*.egg-info/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Visual Studio Code
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Database files
+*.sqlite
+*.db
+
+# Uploads directory
+/uploads
+
+# Log files
+*.log
+
+# Locally stored configuration keys
+.env
