@@ -12,8 +12,50 @@
 
     <div id="user-management">
         <h2>User Management</h2>
+        <form id="user-management-form">
+            <label for="new-username">Username:</label><br>
+            <input type="text" id="new-username" name="new-username"><br>
+            <label for="new-password">Password:</label><br>
+            <input type="password" id="new-password" name="new-password"><br>
+            <label for="new-language-preference">Language Preference:</label><br>
+            <select id="new-language-preference" name="new-language-preference">
+                <option value="en">English</option>
+                <option value="lug">Luganda</option>
+                <option value="swa">Swahili</option>
+            </select><br>
+            <label for="new-role">Role:</label><br>
+            <select id="new-role" name="new-role">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="admin">Admin</option>
+            </select><br>
+            <button type="submit">Create User</button>
+        </form>
         <ul id="user-list">
             <!-- User list will be loaded here -->
+        </ul>
+    </div>
+
+    <div id="course-management">
+        <h2>Course Management</h2>
+        <form id="course-management-form">
+            <label for="course-name">Name:</label><br>
+            <input type="text" id="course-name" name="course-name"><br>
+            <label for="course-description">Description:</label><br>
+            <textarea id="course-description" name="course-description"></textarea><br>
+            <label for="course-content">Content:</label><br>
+            <textarea id="course-content" name="course-content"></textarea><br>
+            <label for="course-video-url">Video URL:</label><br>
+            <input type="text" id="course-video-url" name="course-video-url"><br>
+            <label for="course-pdf-url">PDF URL:</label><br>
+            <input type="text" id="course-pdf-url" name="course-pdf-url"><br>
+             <label for="course-quiz-data">Quiz Data (JSON):</label><br>
+            <textarea id="course-quiz-data" name="course-quiz-data"></textarea><br>
+            <button type="submit">Create Course</button>
+        </form>
+        <h2>Available Courses</h2>
+        <ul id="course-list">
+            <!-- Courses will be listed here -->
         </ul>
     </div>
 

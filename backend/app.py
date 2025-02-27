@@ -1,13 +1,16 @@
 from flask import Flask, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
-from routes import api
 from config import Config
 import os
+from flask_sqlalchemy import SQLAlchemy  # Import Flask-SQLAlchemy
 
+# Initialize Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
 
+# Initialize SQLAlchemy
 db = SQLAlchemy(app)
+
+from routes import api  # Import routes after initializing db
 
 # Register blueprints
 app.register_blueprint(api)

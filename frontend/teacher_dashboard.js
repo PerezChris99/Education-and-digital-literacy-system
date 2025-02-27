@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
     if (token) {
         fetchTeacherDashboard(token);
+        populateCourseSelect(token); // Populate course select for announcements
     } else {
         window.location.href = '/index.html'; // Redirect to login if no token
     }
@@ -32,7 +33,7 @@ function fetchTeacherDashboard(token) {
         courseList.innerHTML = '';
         data.courses.forEach(course => {
             const listItem = document.createElement('li');
-            listItem.innerHTML = `${course.name} - ${course.description}`;
+            listItem.innerHTML = `${course.name} - ${course.description} <button onclick="editCourse(${course.id})">Edit</button>`;
             courseList.appendChild(listItem);
         });
 
@@ -41,7 +42,7 @@ function fetchTeacherDashboard(token) {
         data.students.forEach(student => {
             const listItem = document.createElement('li');
             listItem.innerHTML = `${student.username} - ${student.course_name} - Grade: ${student.grade}
-                                  <button onclick="editGrade(${student.id}, ${student.course_id})">Edit Grade</button>`;
+                                  <button onclick="editGrade(${student.id}, ${course.id})">Edit Grade</button>`;
             studentList.appendChild(listItem);
         });
     });
@@ -111,4 +112,26 @@ function createAnnouncement(token) {
         alert(data.message);
         fetchTeacherDashboard(token); // Refresh the dashboard
     });
+}
+
+function populateCourseSelect(token) {
+    fetch('/teacher/dashboard', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const courseSelect = document.getElementById('announcement-course');
+        courseSelect.innerHTML = '';
+        data.courses.forEach(course => {
+            const option = document.createElement('option');
+            option.value = course.id;
+            option.text = course.name;
+            courseSelect.appendChild(option);
+        });
+    });
+}
+
+function editCourse(courseId) {
+    // Implement course editing functionality (e.g., open a modal with course details)
+    alert('Editing course - Implement course editing functionality');
 }

@@ -1,7 +1,7 @@
-from app import db
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, Boolean, JSON, Float, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from app import db  # Import db from app.py
 
 class User(db.Model):
     id = Column(Integer, primary_key=True)
